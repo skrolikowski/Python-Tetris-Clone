@@ -20,12 +20,26 @@ class Grid:
 		return row >= 0 and row < self.rows and col >= 0 and col < self.cols
 
 	def get_cell(self, row, col):
-		index = ((col - 1) + (row - 1) * self.cols) + 1
+		return self.cells[col + row * self.cols]
 
-		return self.cells[index]
+	def clear_complete_rows(self):
+		for r in range(self.rows, 0, -1):
+			cells_occupied = 0
 
-	def clear_row(row):
-		pass
+			for c in range(self.cols):
+				if self.is_cell(r, c) and self.cell_occupied(r, c):
+					cells_occupied += 1
+
+			if cells_occupied == self.cols:
+				self.clear_row(r)
+
+	def clear_row(self, row):
+		for r in range(row, 0, -1):
+			for c in range(self.cols):
+				self.get_cell(r, c).color = self.get_cell(r - 1, c).color
+
+		for c in range(self.cols):
+			self.get_cell(0, c).color = None
 
 	def draw(self, screen):
 		for cell in self.cells:

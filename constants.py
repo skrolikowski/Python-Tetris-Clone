@@ -12,6 +12,12 @@ UI = {
         "white": pygame.Color("#FFFFFF"),
         "black": pygame.Color("#000000"),
         "blue": pygame.Color("#4169E1"),
+        "red": pygame.Color("#CA0202"),
+        "green": pygame.Color("#81a963"),
+        "purple": pygame.Color("#021f95"),
+        "orange": pygame.Color("#d57318"),
+        "grey": pygame.Color("#5E706A"),
+        "yellow": pygame.Color("#DBA334"),
         "border": pygame.Color("#A9A9A9")
     }
 }
@@ -24,8 +30,14 @@ GRID = {
 }
 
 # Shapes
-from shapes import BlueShape
+from shapes import *
 
 SHAPE = [
-    BlueShape
+    BlueShape,
+    RedShape,
+    GreenShape,
+    PurpleShape,
+    OrangeShape,
+    GreyShape,
+    YellowShape
 ]
