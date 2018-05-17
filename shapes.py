@@ -1,0 +1,84 @@
+from constants import GRID, UI
+from grid import Cell
+
+class Shape:
+	def __init__(self, grid, cells):
+		self.grid      = grid
+		self.cells     = cells
+		self.is_mobile = True
+		self.timer     = 0
+
+	def move(self, dr, dc):
+		if self.can_move(dr, dc):
+			self.cells[0].move(dr, dc)
+			self.cells[1].move(dr, dc)
+			self.cells[2].move(dr, dc)
+			self.cells[3].move(dr, dc)
+		else:
+			if dr == 1:
+				self.freeze()
+
+	def can_move(self, dr, dc):
+		return self.is_mobile and \
+		       self.cells[0].can_move(dr, dc) and \
+		       self.cells[1].can_move(dr, dc) and \
+		       self.cells[2].can_move(dr, dc) and \
+		       self.cells[3].can_move(dr, dc)
+
+	def rotation(self, rot):
+		if self.can_rotate(rot):
+			self.cells[0].move(rot[0][0], rot[0][1])
+			self.cells[1].move(rot[1][0], rot[1][1])
+			self.cells[2].move(rot[2][0], rot[2][1])
+			self.cells[3].move(rot[3][0], rot[3][1])
+
+			self.position = (self.position + 1) % 4
+
+	def can_rotate(self, rot):
+		return self.is_mobile and \
+		       self.cells[0].can_move(rot[0][0], rot[0][1]) and \
+		       self.cells[1].can_move(rot[1][0], rot[1][1]) and \
+		       self.cells[2].can_move(rot[2][0], rot[2][1]) and \
+		       self.cells[3].can_move(rot[3][0], rot[3][1])
+
+	def freeze(self):
+		self.is_mobile = False
+
+		for cell in self.cells:
+			self.grid.get_cell(cell.row + 1, cell.col).color = cell.color
+
+	def update(self, dt):
+		if self.is_mobile:
+			self.timer += dt
+
+			if self.timer >= GRID['drop_timer']:
+				self.timer = 0
+				self.move(1, 0)
+
+	def draw(self, screen):
+		for cell in self.cells:
+			cell.draw(screen)
+
+class BlueShape(Shape):
+	def __init__(self, grid, row, col):
+		self.position = 0
+		self.cells    = [
+			Cell(grid, row - 1, col + 0, UI['color']['blue']),
+			Cell(grid, row + 0, col + 0, UI['color']['blue']),
+			Cell(grid, row + 1, col + 0, UI['color']['blue']),
+			Cell(grid, row + 1, col - 1, UI['color']['blue'])
+		]
+
+		Shape.__init__(self, grid, self.cells)
+
+	def rotate(self):
+		if self.position == 0:
+			rot = [ [1, 1], [0, 0], [-1, -1], [-2, 0] ]
+		elif self.position == 1:
+			rot = [ [1, -1], [0, 0], [-1, 1], [0, 2] ]
+		elif self.position == 2:
+			rot = [ [-1, -1], [0, 0], [1, 1], [2, 0] ]
+		else:
+			rot = [ [-1, 1], [0, 0], [1, -1], [0, -2] ]
+
+		self.rotation(rot)

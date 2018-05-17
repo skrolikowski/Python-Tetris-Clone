@@ -1,0 +1,5 @@
+__pycache__/
+*.dll
+*.exe
+.DS_Store
+Thumbs.db
